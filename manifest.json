@@ -1,0 +1,59 @@
+{
+    "manifest_version": 3,
+    "name": "LinkedIn Job Stats Revealer",
+    "version": "1.0.0",
+    "description": "חושף את מספר ההגשות והצפיות האמיתיות של משרות בלינקדאין",
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "storage",
+        "webRequest"
+    ],
+    "host_permissions": [
+        "*://www.linkedin.com/*",
+        "*://il.linkedin.com/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://www.linkedin.com/jobs/*",
+                "*://il.linkedin.com/jobs/*"
+            ],
+            "js": [
+                "content.js"
+            ],
+            "css": [
+                "styles.css"
+            ],
+            "run_at": "document_start",
+            "all_frames": false
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "injected.js"
+            ],
+            "matches": [
+                "*://www.linkedin.com/*",
+                "*://il.linkedin.com/*"
+            ]
+        }
+    ],
+    "icons": {
+        "32": "icon-32.png",
+        "64": "icon-64.png",
+        "128": "icon-128.png"
+    },
+    "action": {
+        "default_icon": {
+            "32": "icon-32.png",
+            "64": "icon-64.png",
+            "128": "icon-128.png"
+        },
+        "default_title": "LinkedIn Job Stats Revealer"
+    }
+}
