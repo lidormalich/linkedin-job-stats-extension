@@ -5,13 +5,11 @@
     "description": "חושף את מספר ההגשות והצפיות האמיתיות של משרות בלינקדאין",
     "permissions": [
         "activeTab",
-        "scripting",
-        "storage",
-        "webRequest"
+        "scripting"
     ],
     "host_permissions": [
         "*://www.linkedin.com/*",
-        "*://il.linkedin.com/*"
+        "*://*.linkedin.com/*"
     ],
     "background": {
         "service_worker": "background.js"
@@ -20,7 +18,9 @@
         {
             "matches": [
                 "*://www.linkedin.com/jobs/*",
-                "*://il.linkedin.com/jobs/*"
+                "*://*.linkedin.com/jobs/*",
+                "*://www.linkedin.com/jobs/view/*",
+                "*://*.linkedin.com/jobs/view/*"
             ],
             "js": [
                 "content.js"
@@ -39,7 +39,7 @@
             ],
             "matches": [
                 "*://www.linkedin.com/*",
-                "*://il.linkedin.com/*"
+                "*://*.linkedin.com/*"
             ]
         }
     ],

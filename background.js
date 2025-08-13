@@ -1,17 +1,17 @@
 chrome.runtime.onInstalled.addListener(() => {
-    console.log('🎉 LinkedIn Job Stats Revealer הותקן בהצלחה!');
+    // console.log('🎉 LinkedIn Job Stats Revealer הותקן בהצלחה!');
 });
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    console.log('📨 הודעה התקבלה:', request);
+    // console.log('📨 הודעה התקבלה:', request);
     
     if (request.action === 'getJobStats') {
-        console.log('📊 בקשה לנתוני משרה מהתוסף');
+        // console.log('📊 בקשה לנתוני משרה מהתוסף');
         sendResponse({success: true, message: 'התוסף פעיל'});
     }
     
     if (request.action === 'debugInfo') {
-        console.log('🐛 מידע דיבוג:', request.data);
+        // console.log('🐛 מידע דיבוג:', request.data);
         sendResponse({success: true, message: 'מידע דיבוג נשמר'});
     }
     
@@ -32,11 +32,11 @@ async function injectScripts(tabId) {
             files: ['styles.css']
         });
         
-        console.log('🔄 הוזרקו הסקריפטים בהצלחה');
+        // console.log('🔄 הוזרקו הסקריפטים בהצלחה');
         return true;
         
     } catch (err) {
-        console.log('ℹ️ לא ניתן להזריק קוד לטאב זה:', err.message);
+        // console.log('ℹ️ לא ניתן להזריק קוד לטאב זה:', err.message);
         return false;
     }
 }
@@ -57,12 +57,12 @@ async function checkScriptStatus(tabId) {
         });
         
         const pageInfo = result[0].result;
-        console.log('📊 מידע דף:', pageInfo);
+        // console.log('📊 מידע דף:', pageInfo);
         
         return pageInfo;
         
     } catch (err) {
-        console.log('ℹ️ שגיאה בבדיקה:', err.message);
+        // console.log('ℹ️ שגיאה בבדיקה:', err.message);
         return null;
     }
 }
@@ -82,7 +82,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
                     const pageInfo = await checkScriptStatus(tabId);
                     
                     if (pageInfo && !pageInfo.isLoaded) {
-                        console.log('⚠️ הסקריפט לא נטען, מנסה הזרקה חוזרת...');
+                        // console.log('⚠️ הסקריפט לא נטען, מנסה הזרקה חוזרת...');
                         await injectScripts(tabId);
                     }
                 }, 2000);
@@ -96,22 +96,22 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
         const tab = await chrome.tabs.get(activeInfo.tabId);
         
         if (tab.url && tab.url.includes('linkedin.com/jobs')) {
-            console.log('🔄 מעבר לטאב משרות פעיל:', tab.url);
+            // console.log('🔄 מעבר לטאב משרות פעיל:', tab.url);
             
             chrome.tabs.sendMessage(activeInfo.tabId, {
                 action: 'tabActivated',
                 url: tab.url
             }).catch(err => {
-                console.log('ℹ️ לא ניתן לשלוח הודעה לטאב:', err.message);
+                // console.log('ℹ️ לא ניתן לשלוח הודעה לטאב:', err.message);
             });
         }
     } catch (err) {
-        console.log('ℹ️ שגיאה במעקב טאב פעיל:', err.message);
+        // console.log('ℹ️ שגיאה במעקב טאב פעיל:', err.message);
     }
 });
 
 chrome.action.onClicked.addListener(async (tab) => {
-    console.log('🖱️ לחיצה על אייקון התוסף');
+    // console.log('🖱️ לחיצה על אייקון התוסף');
     
     if (tab.url && tab.url.includes('linkedin.com')) {
         const pageInfo = await checkScriptStatus(tab.id);
@@ -131,7 +131,7 @@ chrome.action.onClicked.addListener(async (tab) => {
             alert('ℹ️ התוסף פועל רק בדפי משרות של לינקדאין');
         }
     } else {
-        console.log('ℹ️ לא בדף לינקדאין');
+        // console.log('ℹ️ לא בדף לינקדאין');
         chrome.tabs.create({
             url: 'https://www.linkedin.com/jobs/'
         });
@@ -164,7 +164,7 @@ setInterval(async () => {
             url: ['*://www.linkedin.com/jobs/*', '*://il.linkedin.com/jobs/*']
         });
         
-        console.log(`🔍 נמצאו ${tabs.length} טאבי משרות פעילים`);
+        // console.log(`🔍 נמצאו ${tabs.length} טאבי משרות פעילים`);
         
         for (const tab of tabs) {
             const pageInfo = await checkScriptStatus(tab.id);
@@ -173,17 +173,17 @@ setInterval(async () => {
                 updateBadge(tab.id, 'working');
             } else {
                 updateBadge(tab.id, 'error');
-                console.log(`⚠️ טאב ${tab.id} - הסקריפט לא פועל`);
+                // console.log(`⚠️ טאב ${tab.id} - הסקריפט לא פועל`);
             }
         }
     } catch (err) {
-        console.log('❌ שגיאה בבדיקה תקופתית:', err.message);
+        // console.log('❌ שגיאה בבדיקה תקופתית:', err.message);
     }
 }, 60000);
 
 chrome.runtime.onInstalled.addListener((details) => {
     if (details.reason === 'install') {
-        console.log('🎉 התוסף הותקן לראשונה!');
+        // console.log('🎉 התוסף הותקן לראשונה!');
     } else if (details.reason === 'update') {
         console.log('🔄 התוסף עודכן לגרסה:', chrome.runtime.getManifest().version);
     }

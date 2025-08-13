@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    console.log('LIDOR3333 - הסקריפט המוטמע התחיל לרוץ!');
+
 
     // פונקציה לחיפוש נתונים
     function extractJobStats(data) {
@@ -15,16 +15,20 @@
             for (const [key, value] of Object.entries(obj)) {
                 const currentPath = path ? `${path}.${key}` : key;
                 
-                // חיפוש applies עם שמות שדות שונים
-                if ((key === 'applies' || key === 'numApplicants' || key === 'applicationCount' || key === 'applicants') && typeof value === 'number' && value > 0) {
+                // הרחבת החיפוש לשמות שדות נוספים
+                if ((key === 'applies' || key === 'numApplicants' || key === 'applicationCount' || 
+                     key === 'applicants' || key === 'candidates' || key === 'submissions' ||
+                     key === 'totalApplications' || key === 'applicationTotal') && 
+                    typeof value === 'number' && value > 0) {
                     applies = Math.max(applies, value);
-                    console.log('LIDOR3333 - מצא applies:', value, 'בנתיב:', currentPath);
                 }
                 
-                // חיפוש views עם שמות שדות שונים
-                if ((key === 'views' || key === 'viewCount' || key === 'numViews' || key === 'viewers') && typeof value === 'number' && value > 0) {
+                // הרחבת החיפוש לשמות שדות נוספים
+                if ((key === 'views' || key === 'viewCount' || key === 'numViews' || 
+                     key === 'viewers' || key === 'impressions' || key === 'clicks' ||
+                     key === 'totalViews' || key === 'viewTotal') && 
+                    typeof value === 'number' && value > 0) {
                     views = Math.max(views, value);
-                    console.log('LIDOR3333 - מצא views:', value, 'בנתיב:', currentPath);
                 }
 
                 if (typeof value === 'object' && value !== null) {
@@ -38,9 +42,6 @@
     }
 
     function processResponse(responseText, sourceUrl) {
-        console.log('LIDOR3333 - מעבד תגובה:', sourceUrl);
-        console.log('LIDOR3333 - אורך תגובה:', responseText.length);
-        console.log('LIDOR3333 - תחילת תגובה:', responseText.substring(0, 500));
         
         // שליחת תגובה גולמית
         window.postMessage({
@@ -53,32 +54,27 @@
 
         try {
             const data = JSON.parse(responseText);
-            console.log('LIDOR3333 - פרסור הצליח, מחפש נתונים...');
             
             const stats = extractJobStats(data);
-            console.log('LIDOR3333 - תוצאות חיפוש:', stats);
             
             if (stats.applies >= 0 || stats.views > 0) { // שינוי: >= 0 במקום > 0
-                console.log('LIDOR3333 - שולח נתונים:', stats);
                 window.postMessage({
                     type: 'JOB_STATS_FOUND',
                     stats: stats,
                     source: 'injected.js'
                 }, '*');
-            } else {
-                console.log('LIDOR3333 - לא נמצאו נתונים באובייקט');
             }
             
         } catch (parseErr) {
-            console.log('LIDOR3333 - שגיאה בפרסור JSON:', parseErr);
-            console.log('LIDOR3333 - מנסה חיפוש בטקסט...');
             
             // חיפוש בטקסט עם יותר דפוסים
             const patterns = [
-                /"(?:applies|numApplicants|applicationCount|applicants)"\s*:\s*(\d+)/g,
-                /"(?:views|viewCount|numViews|viewers)"\s*:\s*(\d+)/g,
+                /"(?:applies|numApplicants|applicationCount|applicants|candidates|submissions)"\s*:\s*(\d+)/g,
+                /"(?:views|viewCount|numViews|viewers|impressions|clicks)"\s*:\s*(\d+)/g,
                 /applicants?\s*[\"']?\s*:\s*[\"']?(\d+)/gi,
-                /views?\s*[\"']?\s*:\s*[\"']?(\d+)/gi
+                /views?\s*[\"']?\s*:\s*[\"']?(\d+)/gi,
+                /candidates?\s*[\"']?\s*:\s*[\"']?(\d+)/gi,
+                /impressions?\s*[\"']?\s*:\s*[\"']?(\d+)/gi
             ];
             
             let applies = 0;
@@ -88,29 +84,22 @@
                 let match;
                 while ((match = pattern.exec(responseText)) !== null) {
                     const value = parseInt(match[1]);
-                    if (value > 0) {
-                        if (index < 2) { // applies patterns
+                    if (value > 0 && value < 1000000) { // הגבלה למספרים הגיוניים
+                        if (index < 3) { // applies patterns
                             applies = Math.max(applies, value);
-                            console.log('LIDOR3333 - מצא applies בטקסט:', value, 'עם pattern:', pattern.source);
                         } else { // views patterns
                             views = Math.max(views, value);
-                            console.log('LIDOR3333 - מצא views בטקסט:', value, 'עם pattern:', pattern.source);
                         }
                     }
                 }
             });
 
-            console.log('LIDOR3333 - תוצאות חיפוש בטקסט:', { applies, views });
-
             if (applies >= 0 || views > 0) { // שינוי: >= 0 במקום > 0
-                console.log('LIDOR3333 - שולח נתונים מטקסט:', { applies, views });
                 window.postMessage({
                     type: 'JOB_STATS_FOUND',
                     stats: { applies, views },
                     source: 'injected.js'
                 }, '*');
-            } else {
-                console.log('LIDOR3333 - לא נמצאו נתונים גם בטקסט');
             }
         }
     }
@@ -119,28 +108,28 @@
     const originalFetch = window.fetch;
     window.fetch = function(...args) {
         const url = args[0];
-        const shouldIntercept = url && url.includes('voyager/api/jobs/jobPostings');
-        
-        if (shouldIntercept) {
-            console.log('LIDOR3333 - יירטתי בקשה חשובה:', url);
-        }
+        // הרחבת היירוט לכל הבקשות הרלוונטיות למשרות
+        const shouldIntercept = url && (
+            url.includes('voyager/api/jobs/jobPostings') ||
+            url.includes('voyager/api/jobs') ||
+            url.includes('/jobs/') ||
+            url.includes('jobPostings') ||
+            url.includes('jobDetails')
+        );
         
         return originalFetch.apply(this, args)
             .then(response => {
                 if (shouldIntercept && response && response.status === 200) {
-                    console.log('LIDOR3333 - תגובה התקבלה:', url);
-                    
                     response.clone().text().then(text => {
                         processResponse(text, url);
                     }).catch(err => {
-                        console.log('LIDOR3333 - שגיאה בקריאת טקסט:', err);
+                        // שגיאה בקריאת טקסט
                     });
                 }
                 
                 return response;
             })
             .catch(err => {
-                console.log('LIDOR3333 - שגיאה בבקשה:', err);
                 throw err;
             });
     };
@@ -157,11 +146,16 @@
 
     XMLHttpRequest.prototype.send = function(...args) {
         this.addEventListener('load', function() {
-            const shouldIntercept = this._url && this._url.includes('voyager/api/jobs/jobPostings');
+            // הרחבת היירוט לכל הבקשות הרלוונטיות למשרות
+            const shouldIntercept = this._url && (
+                this._url.includes('voyager/api/jobs/jobPostings') ||
+                this._url.includes('voyager/api/jobs') ||
+                this._url.includes('/jobs/') ||
+                this._url.includes('jobPostings') ||
+                this._url.includes('jobDetails')
+            );
             
             if (shouldIntercept && this.status === 200) {
-                console.log('LIDOR3333 - יירטתי XHR:', this._url);
-                
                 let responseData;
                 
                 try {
@@ -174,7 +168,6 @@
                         // אם זה blob, נקרא אותו כטקסט
                         const reader = new FileReader();
                         reader.onload = function() {
-                            console.log('LIDOR3333 - נתונים מ-blob:', typeof reader.result);
                             if (typeof reader.result === 'string') {
                                 processResponse(reader.result, this._url);
                             }
@@ -188,34 +181,22 @@
                         }
                     }
                     
-                    console.log('LIDOR3333 - responseData:', {
-                        type: typeof responseData,
-                        length: responseData ? responseData.length : 0,
-                        responseType: this.responseType,
-                        url: this._url
-                    });
+
                     
                     if (typeof responseData === 'string' && responseData.length > 100) {
                         processResponse(responseData, this._url);
                     }
                     
                 } catch (err) {
-                    console.log('LIDOR3333 - שגיאה בקריאת XHR response:', err);
-                    
                     // ניסיון אחרון - להשתמש בresponse ישירות
                     try {
                         const fallbackData = this.response;
-                        console.log('LIDOR3333 - fallback data:', {
-                            type: typeof fallbackData,
-                            isString: typeof fallbackData === 'string',
-                            length: fallbackData ? (fallbackData.length || 'no length') : 'null'
-                        });
                         
                         if (typeof fallbackData === 'string' && fallbackData.length > 100) {
                             processResponse(fallbackData, this._url);
                         }
                     } catch (fallbackErr) {
-                        console.log('LIDOR3333 - גם fallback נכשל:', fallbackErr);
+                        // גם fallback נכשל
                     }
                 }
             }
@@ -229,14 +210,11 @@
         if (event.source !== window) return;
         
         if (event.data.type === 'TEST_CONNECTION') {
-            console.log('LIDOR3333 - הודעת בדיקה התקבלה - החיבור עובד!');
             window.postMessage({
                 type: 'CONNECTION_OK',
                 timestamp: Date.now()
             }, '*');
         }
     });
-
-    console.log('LIDOR3333 - הסקריפט המוטמע מוכן');
 
 })();
