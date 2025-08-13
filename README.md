@@ -1,21 +1,21 @@
 # LinkedIn Job Stats Revealer 🔍
 
-תוסף Chrome שמגלה את מספר ההגשות והצפיות האמיתיות של משרות בלינקדאין, כולל רמת התחרות.
+A Chrome extension that reveals the real number of applications and views for LinkedIn job postings, including competition level analysis.
 
-## ✨ תכונות
+## ✨ Features
 
-- **חשיפת נתונים אמיתיים** - מציג את מספר ההגשות והצפיות האמיתיות
-- **חישוב רמת תחרות** - מחשב אוטומטית את רמת התחרות לפי הנתונים
-- **עיצוב מודרני** - תגים צבעוניים בסגנון Tailwind עם פונט Rubik
-- **תמיכה מלאה ב-SPA** - עובד בכל דף משרה בלינקדאין
-- **מעקב מתמיד** - מזהה שינויים בדף ומתעדכן אוטומטית
-- **דיבוג מתקדם** - לוגים מפורטים לפתרון בעיות
+- **Real Data Exposure** - Displays actual application counts and view numbers
+- **Competition Analysis** - Automatically calculates competition level based on data
+- **Modern Design** - Colorful tags with Tailwind-style design using Rubik font
+- **Full SPA Support** - Works on all LinkedIn job pages
+- **Continuous Monitoring** - Detects page changes and updates automatically
+- **Advanced Debugging** - Detailed logs for troubleshooting
 
-## 🚀 התקנה
+## 🚀 Installation
 
-### התקנה ידנית:
+### Manual Installation:
 
-1. **הורד את הקבצים:**
+1. **Download the files:**
    - `manifest.json`
    - `content.js`
    - `injected.js`
@@ -25,119 +25,137 @@
    - `icon-64.svg`
    - `icon-128.svg`
 
-2. **פתח Chrome:**
-   - לך ל `chrome://extensions/`
-   - הפעל "Developer mode" (מצב מפתח)
+2. **Open Chrome:**
+   - Go to `chrome://extensions/`
+   - Enable "Developer mode"
 
-3. **התקן את התוסף:**
-   - לחץ על "Load unpacked" (טען לא ארוז)
-   - בחר את התיקייה עם הקבצים
+3. **Install the extension:**
+   - Click "Load unpacked"
+   - Select the folder containing the files
 
-4. **אשר הרשאות:**
-   - לחץ על "Details" (פרטים) של התוסף
-   - אשר גישה ללינקדאין
+4. **Grant permissions:**
+   - Click "Details" for the extension
+   - Allow access to LinkedIn
 
-## 📊 איך זה עובד
+## 📊 How It Works
 
-### זיהוי דפי משרה:
-- דפי משרה בודדות (`/jobs/view/`)
-- דפי חיפוש משרות (`/jobs/search/`)
-- דפי אוספי משרות (`/jobs/collections/`)
+### Job Page Detection:
+- Individual job pages (`/jobs/view/`)
+- Job search pages (`/jobs/search/`)
+- Job collection pages (`/jobs/collections/`)
 
-### יירוט נתונים:
-- יירוט בקשות API של לינקדאין
-- חילוץ נתוני הגשות וצפיות
-- עיבוד נתונים בזמן אמת
+### Data Interception:
+- Intercepts LinkedIn API requests
+- Extracts application and view data
+- Processes data in real-time
 
-### תצוגה:
-- תגים צבעוניים ליד כותרת המשרה
-- עדכון אוטומטי כשמשתנים דפים
-- עיצוב רספונסיבי למובייל
+### Display:
+- Colorful tags next to job titles
+- Automatic updates when navigating between pages
+- Responsive design for mobile
 
-## 🎨 רמות תחרות
+## 🎨 Competition Levels
 
-| רמה | צבע | תנאים |
-|-----|-----|--------|
-| **נמוכה מאוד** | 🟢 ירוק | פחות מ-50 הגשות |
-| **נמוכה** | 🟢 ירוק | 50-199 הגשות |
-| **בינונית** | 🟠 כתום | 200-499 הגשות |
-| **גבוהה** | 🔴 אדום | 500-999 הגשות |
-| **גבוהה מאוד** | 🔴 אדום | 1000+ הגשות |
+| Level | Color | Conditions |
+|-------|-------|------------|
+| **Very Low** | 🟢 Green | Less than 50 applications |
+| **Low** | 🟢 Green | 50-199 applications |
+| **Medium** | 🟠 Orange | 200-499 applications |
+| **High** | 🔴 Red | 500-999 applications |
+| **Very High** | 🔴 Red | 1000+ applications |
 
-## 🔧 פתרון בעיות
+## 🔧 Troubleshooting
 
-### התוסף לא מופיע:
-1. רענן את הדף
-2. בדוק שהתוסף מופעל ב-`chrome://extensions/`
-3. פתח את Console (F12) ובדוק לוגים
+### Extension Not Appearing:
+1. Refresh the page
+2. Check if extension is enabled in `chrome://extensions/`
+3. Open Console (F12) and check logs
 
-### נתונים לא מתעדכנים:
-1. המתן כמה שניות לטעינת הנתונים
-2. רענן את הדף
-3. בדוק שאתה בדף משרה רלוונטי
+### Data Not Updating:
+1. Wait a few seconds for data to load
+2. Refresh the page
+3. Verify you're on a relevant job page
 
-### שגיאות בConsole:
-- התוסף מציג לוגים מפורטים עם תאריכים
-- חפש הודעות שמתחילות ב-`LIDOR:`
-- בדוק שהתוסף רץ ב-`chrome://extensions/`
+### Console Errors:
+- The extension displays detailed logs with timestamps
+- Look for messages starting with `LIDOR:`
+- Check if extension is running in `chrome://extensions/`
 
-## 🛠️ פיתוח
+## 🛠️ Development
 
-### מבנה הקבצים:
+### File Structure:
 ```
 linkedin-job-stats-extension/
-├── manifest.json      # הגדרות התוסף
-├── content.js         # סקריפט התוכן הראשי
-├── injected.js        # סקריפט מוטמע ליירוט API
-├── background.js      # סקריפט רקע
-├── styles.css         # עיצוב התצוגה
-├── icon-32.svg        # אייקון 32x32
-├── icon-64.svg        # אייקון 64x64
-├── icon-128.svg       # אייקון 128x128
-└── readme_instructions.md
+├── manifest.json      # Extension configuration
+├── content.js         # Main content script
+├── injected.js        # Injected script for API interception
+├── background.js      # Background script
+├── styles.css         # Display styling
+├── icon-32.svg        # 32x32 icon
+├── icon-64.svg        # 64x64 icon
+├── icon-128.svg       # 128x128 icon
+└── README.md
 ```
 
-### הוספת תכונות:
-1. ערוך את `content.js` לתצוגה
-2. ערוך את `injected.js` ליירוט נתונים
-3. ערוך את `styles.css` לעיצוב
-4. בדוק ב-`chrome://extensions/` עם "Reload"
+### Adding Features:
+1. Edit `content.js` for display
+2. Edit `injected.js` for data interception
+3. Edit `styles.css` for styling
+4. Test in `chrome://extensions/` with "Reload"
 
-## 📝 הערות טכניות
+## 📝 Technical Notes
 
-### יירוט רשת:
-- משתמש ב-`fetch` ו-`XMLHttpRequest` interception
-- מחפש URLs עם `voyager/api/jobs`
-- מעבד JSON ו-text responses
+### Network Interception:
+- Uses `fetch` and `XMLHttpRequest` interception
+- Searches for URLs containing `voyager/api/jobs`
+- Processes JSON and text responses
 
-### תצוגה:
-- משתמש ב-MutationObserver למעקב שינויים
-- מחפש כותרות משרה עם selectors שונים
-- תמיכה ב-SPA navigation
+### Display:
+- Uses MutationObserver to track changes
+- Searches for job titles with various selectors
+- Supports SPA navigation
 
-### ביצועים:
-- בדיקה תקופתית כל 3 שניות
-- מקסימום 5 ניסיונות יצירה מחדש
-- לוגים עם timestamp מפורט
+### Performance:
+- Periodic checks every 3 seconds
+- Maximum 5 retry attempts for recreation
+- Logs with detailed timestamps
 
-## 🔒 פרטיות
+## 🔒 Privacy
 
-- התוסף **לא** שולח נתונים לשרתים חיצוניים
-- כל הנתונים נשארים בדפדפן שלך
-- אין מעקב או אחסון נתונים
+- The extension **does not** send data to external servers
+- All data remains in your browser
+- No tracking or data storage
 
-## 📞 תמיכה
+## 📞 Support
 
-אם יש בעיות:
-1. בדוק את Console (F12) ללוגים
-2. רענן את הדף
-3. הפעל מחדש את התוסף
-4. בדוק שהתוסף מופעל ב-`chrome://extensions/`
+If you encounter issues:
+1. Check Console (F12) for logs
+2. Refresh the page
+3. Restart the extension
+4. Verify extension is enabled in `chrome://extensions/`
 
-## 🎯 מטרה
+## 🎯 Purpose
 
-התוסף נועד לעזור למחפשי עבודה להבין את רמת התחרות במשרות בלינקדאין, כדי לקבל החלטות מושכלות יותר על הגשת מועמדות.
+This extension is designed to help job seekers understand the competition level for LinkedIn job postings, enabling them to make more informed decisions about applying.
+
+## 🌍 International Support
+
+The extension supports multiple languages and LinkedIn domains:
+- English (www.linkedin.com)
+- Hebrew (il.linkedin.com)
+- Spanish (es.linkedin.com)
+- French (fr.linkedin.com)
+- German (de.linkedin.com)
+- Italian (it.linkedin.com)
+- Portuguese (pt.linkedin.com)
+- Dutch (nl.linkedin.com)
+- Swedish (se.linkedin.com)
+- And more...
+
+## ⚠️ Disclaimer
+
+**Note:** This extension uses reverse engineering techniques and may stop working if LinkedIn changes their API structure.
 
 ---
 
-**הערה:** התוסף משתמש בטכניקות reverse engineering וייתכן שיפסיק לעבוד אם לינקדאין ישנה את ה-API שלהם.
+**Contributions welcome!** Feel free to submit issues, feature requests, or pull requests to improve this extension.
